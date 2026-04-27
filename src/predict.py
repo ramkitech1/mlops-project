@@ -3,6 +3,8 @@ import joblib
 import numpy as np
 import os
 
+from preprocess import load_data, preprocess
+
 #  Ensure logs folder exists
 os.makedirs("logs", exist_ok=True)
 

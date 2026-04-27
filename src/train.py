@@ -7,9 +7,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 
-from src.preprocess import load_data, preprocess
+from preprocess import load_data, preprocess
 
-from src.preprocess import load_data, preprocess
+
 
 
 
