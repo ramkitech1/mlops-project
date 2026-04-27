@@ -1,5 +1,7 @@
 .venv/
+mlruns/
+mlflow.db
+logs/
+models/
 __pycache__/
 *.pyc
-.dvc/cache/
-models/

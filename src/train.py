@@ -1,11 +1,20 @@
 import mlflow
 import mlflow.sklearn
 import joblib
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from preprocess import load_data, preprocess
 
-mlflow.set_experiment("mlops-project")
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+from src.preprocess import load_data, preprocess
+
+from src.preprocess import load_data, preprocess
+
+
+
+#  Force same tracking location
+mlflow.set_tracking_uri("file:./mlruns")
 
 def train():
     df = load_data("data/data.csv")
@@ -13,19 +22,28 @@ def train():
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-    model = LogisticRegression()
-    model.fit(X_train, y_train)
+    pipeline = Pipeline([
+        ("scaler", StandardScaler()),
+        ("model", LogisticRegression(max_iter=1000))
+    ])
 
-    accuracy = model.score(X_test, y_test)
+    #  IMPORTANT: create experiment FIRST
+    experiment_name = "mlops-project"
+    mlflow.set_experiment(experiment_name)
 
-    with mlflow.start_run():
+    #  Explicitly bind run to experiment
+    with mlflow.start_run(experiment_id=mlflow.get_experiment_by_name(experiment_name).experiment_id):
+
+        pipeline.fit(X_train, y_train)
+
+        accuracy = pipeline.score(X_test, y_test)
+
         mlflow.log_param("model", "LogisticRegression")
         mlflow.log_metric("accuracy", accuracy)
-        mlflow.sklearn.log_model(model, "model")
 
-    joblib.dump(model, "models/model.pkl")
+        mlflow.sklearn.log_model(pipeline, name="model")
 
-    print(f"Model trained with accuracy: {accuracy}")
+        print(f" Accuracy: {accuracy}")
 
 if __name__ == "__main__":
     train()
