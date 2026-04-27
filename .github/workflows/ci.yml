@@ -24,6 +24,7 @@ jobs:
 
     - name: Run Training Pipeline
       run: |
+        cd src
         python src/train.py
 
     - name: Verify Model File Exists
