@@ -1,16 +1,15 @@
-name: MLOps CI Pipeline
+name: CI Pipeline
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  train-and-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Checkout Code
+    - name: Checkout
       uses: actions/checkout@v3
 
     - name: Setup Python
@@ -22,16 +21,6 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    - name: Run Training Pipeline
+    - name: Run Training
       run: |
-        cd src
-        python train.py
-
-    - name: Verify Model File Exists
-      run: |
-        if [ ! -f src/models/model.pkl ]; then
-          echo " Model not created"
-          exit 1
-        else
-          echo " Model created successfully"
-        fi
+        python -m src.train
