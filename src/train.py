@@ -1,14 +1,17 @@
 import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+data_path = os.path.join(BASE_DIR, "data", "data.csv")
 import mlflow
 import mlflow.sklearn
 import joblib
+
 
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from src.preprocess import load_data, preprocess
 
-from preprocess import load_data, preprocess
 
 
 def train():
@@ -16,7 +19,7 @@ def train():
     os.makedirs("models", exist_ok=True)
 
     # Load & preprocess data
-    df = load_data("../data/data.csv")
+    df = load_data(data_path)
     X, y = preprocess(df)
 
     # Split data
